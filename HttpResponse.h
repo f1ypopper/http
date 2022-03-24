@@ -2,16 +2,15 @@
 #define HTTP_RESP_H
 #include <string>
 #include <map>
-using namespace std;
-
+#include <vector>
 class HttpResponse{
 	public:
-		int status_code;
-		string status_text;
-		string content;
-		map<string, string> headers;	
+		std::string status_code;
+		std::string status_message;
+		std::string data;
+		std::map<std::string, std::string> headers;	
 };
 
-HttpResponse parse_http_response(string response){
-}
+HttpResponse parse_http_response(std::string response);
+std::vector<std::string> split(std::string str, std::string delim);
 #endif

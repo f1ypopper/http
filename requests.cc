@@ -43,21 +43,17 @@ void request(Method type, std::string url,
 	int sockfd;
 	sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	int connected = connect(sockfd, res->ai_addr, res->ai_addrlen);
-	std::cout << "Is connected: " + connected << std::endl;
 	int bytes_sent = send(sockfd, req.constructed_message().data(), req.constructed_message().length(), 0);
-	std::cout << bytes_sent << std::endl;
-	std::cout << req.constructed_message().length() << std::endl;
 	int BUFFER_LEN = 1024;
 	char buffer[BUFFER_LEN];
 	std::string recvd_data;
 	while(true){
 		int recv_len = recv(sockfd, buffer, BUFFER_LEN, 0);
-		std::cout << recv_len << std::endl;
 		if(recv_len == 0)
 			break;
 		recvd_data.append(std::string(buffer,BUFFER_LEN));
-		std::cout << std::string(buffer,BUFFER_LEN) << std::endl;
 	}
+	std::cout << recvd_data << std::endl;
 }
 
 HttpRequest create_request(Method type, 
