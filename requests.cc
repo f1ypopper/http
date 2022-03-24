@@ -1,6 +1,5 @@
 #include "requests.h"
 #include "HttpRequest.h"
-#include "HttpResponse.h"
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netdb.h>
@@ -8,16 +7,57 @@
 #include <netinet/in.h>
 #include <map>
 #include <string>
+#include <cstring>
 
-HttpResponse request(Method type, std::string url,
+void request(Method type, std::string url,
 					std::map<std::string, std::string>params,
 					std::map<std::string, std::string>headers,
 					std::string data)
 {
 	HttpRequest req = create_request(type, url, params, headers, data);
-	std::string parsed_url = url_split(url).host;
+	Url parsed_url = url_split(url);
 	req.construct();
-	
+
+	struct addrinfo hints, *res, *p;
+	int status;
+	char ipstr[INET_ADDRSTRLEN];
+	std::memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+    if ((status = getaddrinfo(parsed_url.host.data(), "http", &hints, &res)) != 0) {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
+    }
+	for(p = res; p != NULL ; p = p->ai_next){
+		void *addr;
+		char *ipver;
+
+		if(p->ai_family == AF_INET){
+            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+            addr = &(ipv4->sin_addr);
+            ipver = "IPv4";
+			inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
+			break;
+		}
+	}
+
+	int sockfd;
+	sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	int connected = connect(sockfd, res->ai_addr, res->ai_addrlen);
+	std::cout << "Is connected: " + connected << std::endl;
+	int bytes_sent = send(sockfd, req.constructed_message().data(), req.constructed_message().length(), 0);
+	std::cout << bytes_sent << std::endl;
+	std::cout << req.constructed_message().length() << std::endl;
+	int BUFFER_LEN = 1024;
+	char buffer[BUFFER_LEN];
+	std::string recvd_data;
+	while(true){
+		int recv_len = recv(sockfd, buffer, BUFFER_LEN, 0);
+		std::cout << recv_len << std::endl;
+		if(recv_len == 0)
+			break;
+		recvd_data.append(std::string(buffer,BUFFER_LEN));
+		std::cout << std::string(buffer,BUFFER_LEN) << std::endl;
+	}
 }
 
 HttpRequest create_request(Method type, 
@@ -58,6 +98,7 @@ std::string create_query_string(std::map<std::string, std::string> params){
 	return query.substr(0,query.length()-1);//return the string without the last ampersand
 }
 
+//Url Encoding function can be improved
 std::string url_encode(std::string str){
 	std::string encoded;
 	for(int i=0; i < str.length(); i++){

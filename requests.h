@@ -14,10 +14,10 @@ struct Url{
 	std::string path;
 };
 
-//HttpResponse request(Method type, std::string url,
-					//std::map<std::string, std::string>params,
-					//std::map<std::string, std::string>headers,
-					//std::string data);
+void request(Method type, std::string url,
+			std::map<std::string, std::string>params,
+			std::map<std::string, std::string>headers,
+			std::string data);
 
 HttpRequest create_request(Method type, 
 						std::string url,

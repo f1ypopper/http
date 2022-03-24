@@ -13,6 +13,5 @@ class HttpResponse{
 };
 
 HttpResponse parse_http_response(string response){
-
 }
 #endif
