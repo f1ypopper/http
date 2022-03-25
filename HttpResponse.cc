@@ -62,13 +62,20 @@ std::map<std::string, std::string> parse_headers(std::vector<std::string> source
 
 HttpResponse parse_http_response(std::string source){
 	std::vector<std::string> split_response;
+	int header_end_index=0;
+	int count=0;
 	for (auto &section: split(source,"\r\n"))
 	{
+		if(section.empty()){
+			header_end_index=count;
+		}
 		split_response.push_back(section);
+		count+=1;
 	}
 
 	std::string status_line = split_response.at(0);
-	std::vector<std::string> headers = {split_response.begin()+1, split_response.end() - 2};
+
+	std::vector<std::string> headers = {split_response.begin()+1, split_response.begin()+header_end_index};
 	std::string body = split_response.at(split_response.size()-1);
 	std::vector<std::string> parsed_status_line = parse_status_line(status_line);
 	std::map<std::string, std::string> parsed_headers_map = parse_headers(headers);		

@@ -1,5 +1,6 @@
 #ifndef REQUESTS_H
 #define REQUESTS_H
+#include "HttpResponse.h"
 #include "HttpRequest.h"
 #include <string>
 #include <map>
@@ -14,7 +15,7 @@ struct Url{
 	std::string path;
 };
 
-void request(Method type, std::string url,
+HttpResponse request(Method type, std::string url,
 			std::map<std::string, std::string>params,
 			std::map<std::string, std::string>headers,
 			std::string data);

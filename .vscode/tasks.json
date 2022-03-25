@@ -12,6 +12,10 @@
                 "${fileDirname}/${fileBasenameNoExtension}",
                 "HttpResponse.cc",
                 "HttpResponse.h",
+                "HttpRequest.cc",
+                "HttpRequest.h",
+                "requests.cc",
+                "requests.h"
 
             ],
             "options": {

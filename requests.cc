@@ -1,4 +1,5 @@
 #include "requests.h"
+#include "HttpResponse.h"
 #include "HttpRequest.h"
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -9,7 +10,7 @@
 #include <string>
 #include <cstring>
 
-void request(Method type, std::string url,
+HttpResponse request(Method type, std::string url,
 					std::map<std::string, std::string>params,
 					std::map<std::string, std::string>headers,
 					std::string data)
@@ -17,7 +18,6 @@ void request(Method type, std::string url,
 	HttpRequest req = create_request(type, url, params, headers, data);
 	Url parsed_url = url_split(url);
 	req.construct();
-
 	struct addrinfo hints, *res, *p;
 	int status;
 	char ipstr[INET_ADDRSTRLEN];
@@ -53,7 +53,8 @@ void request(Method type, std::string url,
 			break;
 		recvd_data.append(std::string(buffer,BUFFER_LEN));
 	}
-	std::cout << recvd_data << std::endl;
+	HttpResponse response = parse_http_response(recvd_data);
+	return response;
 }
 
 HttpRequest create_request(Method type, 
