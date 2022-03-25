@@ -16,9 +16,10 @@ int main(){
 	//req.construct();
 	//request(Method::GET, "http://www.example.com/",params,headers,"");
 
-//	HttpResponse resp = parse_http_response("HTTP/1.1 200 OK\r\nContent-Length: 155\r\n<html>\n<head>");
+	HttpResponse resp = parse_http_response("HTTP/1.1 200 OK\r\nContent-Length: 155\r\nAccept-Language: en\r\n\r\n<html>\n<head>");
 	//std::cout << resp.status_code << std::endl;
 	//std::cout << resp.headers["Content-Length"] << std::endl;
-	std::vector<std::string> out = split("hello!!atharva!!guys","!!");
+	//std::vector<std::string> out = split("HTTP/1.1 200 OK\r\nContent-Length: 155\r\n<html>\n<head>","\r\n");
+	std::cout << resp.data << std::endl;
 	return 0;
 }
